@@ -1,0 +1,111 @@
+
+---
+
+## 👥 Rôles & Accès
+
+### 🛡️ Super Admin (par défaut)
+- Accès total à tous les modules
+- Paramétrage stratégique
+- Correction & arbitrage
+
+### 🔐 Rôles évolutifs (optionnels)
+- `admin_fret`
+- `admin_driver`
+- `admin_loc`
+- `admin_resto`
+
+👉 Gérés via Supabase (RLS + rôles).
+
+---
+
+## 💰 Gestion financière
+
+DIGIY ADMIN centralise :
+- Tous les **prix serveur**
+- Les **statuts de paiement**
+- Les journaux d’audit
+- Les corrections manuelles (si nécessaire)
+
+### Principes clés
+- Devise locale prioritaire (ex : **F CFA – XOF**)
+- Calculs **côté serveur uniquement**
+- Front = affichage
+- Paiement direct (0% commission)
+
+---
+
+## 🗄️ Backend (Supabase)
+
+### Tables clés
+- `fret_pricing`
+- `fret_orders`
+- `fret_payment_logs`
+- `driver_profiles`
+- `admin_users`
+- `admin_logs`
+
+### Fonctions SQL (RPC)
+- Calculs de prix
+- Actions sensibles (paiement, validation)
+- Listes sécurisées par rôle
+
+---
+
+## 🔐 Sécurité
+
+- Accès **strictement privé**
+- Login admin dédié
+- Séparation totale avec :
+  - Client
+  - Chauffeur
+- RLS activée sur toutes les tables sensibles
+
+> DIGIY ADMIN n’est **jamais exposé publiquement**.
+
+---
+
+## 🚀 Déploiement
+
+- Frontend : HTML / CSS / JS (Admin-only)
+- Backend : Supabase (PostgreSQL + RPC)
+- Hébergement : VPS / domaine privé
+- Accès : réservé DIGIY
+
+---
+
+## 🦅 Vision DIGIY
+
+DIGIY ADMIN est le **cerveau souverain** de l’écosystème.
+
+- Pas une marketplace
+- Pas un intermédiaire
+- Pas un prédateur de commission
+
+Mais un **outil de structuration**,  
+au service des communautés locales.
+
+> Le pouvoir reste au centre.  
+> La valeur reste sur le terrain.
+
+---
+
+## 📌 Statut du projet
+
+- ✅ Architecture validée
+- 🚧 Déploiement progressif des modules
+- 🔒 Sécurité prioritaire
+- 🌍 Expansion panafricaine
+
+---
+
+## 🤝 Gouvernance
+
+Projet porté par **DIGIYLYFE**  
+Contact admin :  
+📧 admin@digiylyfe.com  
+🌍 https://digiylyfe.com
+
+---
+
+© DIGIYLYFE — DIGIY ADMIN / HUB  
+Souveraineté digitale • Afrique d’abord 🇸🇳

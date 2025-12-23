@@ -1,0 +1,39 @@
+# 🔐 DIGIY — Sécurité & RLS Supabase
+
+Ce document décrit la **stratégie de sécurité** de DIGIY basée sur Supabase, PostgreSQL et RLS.
+
+> La sécurité est pensée **serveur first**, pas front.
+
+---
+
+## 🎯 Objectifs
+
+- Protéger les données sensibles
+- Isoler clients, chauffeurs, admins
+- Empêcher toute élévation de privilège
+- Garantir la traçabilité (audit)
+
+---
+
+## 🔒 RLS (Row Level Security)
+
+Toutes les tables sensibles ont :
+- RLS activée
+- Politiques explicites
+- Accès minimal par rôle
+
+Exemples :
+- Un chauffeur ne voit que ses missions
+- Un client ne voit que ses commandes
+- Un admin voit tout
+
+---
+
+## 🧩 Exemples de politiques
+
+### Chauffeur → ses missions
+```sql
+create policy "driver_own_orders"
+on public.fret_orders
+for select
+using (driver_phone = current_setting('request.jwt.claims', true)::json->>'phone');

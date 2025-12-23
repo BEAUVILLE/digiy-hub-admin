@@ -1,0 +1,104 @@
+# 🧬 DIGIY CORE — Authentification, rôles & identités
+
+DIGIY CORE est le **noyau d’identité et de sécurité** de l’écosystème DIGIY.  
+Il gère **qui est qui**, **qui peut faire quoi**, et **dans quel contexte**.
+
+> Un seul CORE pour tous les modules DIGIY.
+
+---
+
+## 🎯 Rôle de DIGIY CORE
+
+- Authentification unifiée
+- Gestion des rôles
+- Séparation stricte des profils
+- Souveraineté de l’identité numérique
+
+DIGIY CORE est utilisé par :
+- DIGIY FRET
+- DIGIY DRIVER
+- DIGIY LOC
+- DIGIY RESTO
+- DIGIY PAY
+- DIGIY MARKET
+- DIGIY ADMIN / HUB
+
+---
+
+## 👥 Types d’identités
+
+### 🧍 Client
+- Identifié par téléphone
+- Accès aux services (commandes, suivi)
+- Aucun privilège admin
+
+### 🚚 Chauffeur / Pro
+- Identité métier
+- Accès limité à son périmètre
+- Actions contrôlées (RPC)
+
+### 🛡️ Admin DIGIY
+- Identité centrale
+- Accès global ou par module
+- Actions sensibles sécurisées
+
+---
+
+## 🔑 Méthodes d’authentification
+
+- Téléphone + PIN (terrain first)
+- Token temporaire (sessions)
+- Admin : login sécurisé
+
+> Pas de dépendance lourde, priorité à la simplicité.
+
+---
+
+## 🧩 Rôles (RBAC)
+
+Rôles gérés via Supabase :
+
+- `client`
+- `driver`
+- `pro`
+- `admin_fret`
+- `admin_driver`
+- `admin_loc`
+- `super_admin`
+
+Les rôles déterminent :
+- Accès aux tables
+- Accès aux RPC
+- Accès aux interfaces
+
+---
+
+## 🗄️ Tables CORE (exemples)
+
+- `users_core`
+- `driver_profiles`
+- `admin_users`
+- `sessions`
+- `roles_map`
+
+---
+
+## 🔐 Principes fondamentaux
+
+- Une identité ≠ un rôle
+- Un rôle ≠ un module
+- Tout accès est **explicite**
+- Tout contrôle est **serveur**
+
+---
+
+## 🦅 Vision DIGIY CORE
+
+DIGIY CORE protège l’écosystème.  
+Il garantit que le pouvoir reste structuré, maîtrisé, souverain.
+
+> Sans CORE, il n’y a pas de royaume.
+
+---
+
+© DIGIYLYFE — DIGIY CORE  

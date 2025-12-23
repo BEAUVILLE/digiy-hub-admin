@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>DIGIY FRET — Admin Pricing</title>
+  <meta name="theme-color" content="#16a34a"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{--bg:#f7fbf8;--text:#0f172a;--muted:#475569;--line:rgba(15,23,42,.12);--shadow:0 10px 22px rgba(2,6,23,.08);--r:16px;--green:#16a34a;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Arial;background:var(--bg);color:var(--text);padding:16px}
+    header{background:var(--green);color:#fff;padding:14px;border-radius:18px;font-weight:950;box-shadow:var(--shadow)}
+    main{max-width:980px;margin:14px auto 0}
+    .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:800px){.row{grid-template-columns:1fr}}
+    input{width:100%;padding:12px;border-radius:14px;border:1px solid var(--line);font-weight:900}
+    label{display:block;font-weight:950;margin:10px 0 6px}
+    button{padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:950;cursor:pointer}
+    .btn{background:#eaffef;border-color:#bbf7d0}
+    .muted{color:var(--muted);font-weight:800;font-size:13px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-weight:800}
+    th{background:#f8fafc}
+  </style>
+</head>
+<body>
+<header>🧮 DIGIY FRET — Admin Pricing (F CFA)</header>
+<main>
+  <div class="card">
+    <b>Ajouter / Modifier une ville</b>
+    <div class="muted">Les prix sont en F CFA (XOF).</div>
+
+    <label>Ville (ex: DAKAR)</label>
+    <input id="city" placeholder="DAKAR"/>
+
+    <div class="row">
+      <div><label>Base</label><input id="base" inputmode="numeric" placeholder="2000"/></div>
+      <div><label>Prix / km</label><input id="pkm" inputmode="numeric" placeholder="250"/></div>
+    </div>
+
+    <div class="row">
+      <div><label>Plancher S</label><input id="fs" inputmode="numeric" placeholder="3000"/></div>
+      <div><label>Plancher M</label><input id="fm" inputmode="numeric" placeholder="3500"/></div>
+    </div>
+
+    <div class="row">
+      <div><label>Plancher L</label><input id="fl" inputmode="numeric" placeholder="4500"/></div>
+      <div><label>Plancher XL</label><input id="fxl" inputmode="numeric" placeholder="6000"/></div>
+    </div>
+
+    <div class="row">
+      <div><label>Supplément Express</label><input id="ex" inputmode="numeric" placeholder="1500"/></div>
+      <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="save">✅ Enregistrer</button>
+        <button id="refresh">↻ Actualiser</button>
+      </div>
+    </div>
+
+    <div class="muted" id="log">Prêt.</div>
+  </div>
+
+  <div class="card">
+    <b>Villes & Tarifs</b>
+    <table>
+      <thead>
+        <tr>
+          <th>Ville</th><th>Base</th><th>/km</th><th>Floors</th><th>Express</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+const SUPABASE_URL="https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const $=id=>document.getElementById(id);
+const num=v=>parseInt(String(v||"").replace(/[^\d]/g,""),10)||0;
+
+async function load(){
+  $("log").textContent="Chargement…";
+  const {data,error}=await sb.from("fret_pricing").select("*").order("city",{ascending:true});
+  if(error){ console.error(error); $("log").textContent="Erreur ❗"; return; }
+  $("rows").innerHTML="";
+  (data||[]).forEach(r=>{
+    const floors=`S:${r.floor_s} M:${r.floor_m} L:${r.floor_l} XL:${r.floor_xl}`;
+    $("rows").insertAdjacentHTML("beforeend",`
+      <tr>
+        <td>${r.city}</td>
+        <td>${r.base_price}</td>
+        <td>${r.price_per_km}</td>
+        <td>${floors}</td>
+        <td>${r.express_fee}</td>
+      </tr>
+    `);
+  });
+  $("log").textContent="OK ✅";
+}
+
+$("refresh").onclick=load;
+
+$("save").onclick=async()=>{
+  const city=String($("city").value||"").trim().toUpperCase();
+  if(!city){ $("log").textContent="Ville manquante"; return; }
+
+  const payload={
+    city,
+    base_price:num($("base").value),
+    price_per_km:num($("pkm").value),
+    floor_s:num($("fs").value),
+    floor_m:num($("fm").value),
+    floor_l:num($("fl").value),
+    floor_xl:num($("fxl").value),
+    express_fee:num($("ex").value)
+  };
+
+  $("log").textContent="Enregistrement…";
+  const {error}=await sb.from("fret_pricing").upsert(payload,{onConflict:"city"});
+  if(error){ console.error(error); $("log").textContent="Erreur save ❗"; return; }
+  $("log").textContent="Enregistré ✅";
+  load();
+};
+
+load();
+</script>
+</body>
+</html>

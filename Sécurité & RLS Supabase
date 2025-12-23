@@ -37,3 +37,5 @@ create policy "driver_own_orders"
 on public.fret_orders
 for select
 using (driver_phone = current_setting('request.jwt.claims', true)::json->>'phone');
+
+

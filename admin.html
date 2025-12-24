@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>DIGIY HUB ADMIN — Aigle Royal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#16a34a" />
+  <meta name="description" content="DIGIY HUB ADMIN — Centre de contrôle. 0% commission. Paiement direct." />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{
+      --green:#16a34a;
+      --gold:#facc15;
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:rgba(15,23,42,.12);
+      --radius:18px;
+      --shadow:0 12px 28px rgba(2,6,23,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{
+      background:linear-gradient(135deg,var(--green),#22c55e);
+      color:#fff;
+      padding:18px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .logo{display:flex;align-items:center;gap:12px;font-weight:950;letter-spacing:.04em}
+    .mark{
+      width:42px;height:42px;border-radius:14px;
+      background:linear-gradient(135deg,var(--gold),#f97316);
+      display:grid;place-items:center;
+      color:#111827;font-size:20px;
+      box-shadow:0 8px 20px rgba(250,204,21,.35);
+    }
+    nav{display:flex;gap:10px;flex-wrap:wrap}
+    nav a{
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.35);
+      padding:8px 14px;
+      border-radius:999px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+      font-size:13px;
+    }
+    main{max-width:1100px;margin:auto;padding:22px}
+    h2{margin:0}
+    .sub{margin:8px 0 14px;color:var(--muted);font-weight:650}
+    .topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 18px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:900}
+    .muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      border:1px solid var(--line);
+      cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(2,6,23,.10)}
+    .card h3{margin:0 0 6px 0;font-size:18px}
+    .card p{margin:0;color:var(--muted);font-size:14px}
+    footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="logo">
+    <div class="mark">∞</div>
+    <div>
+      DIGIY HUB ADMIN<br>
+      <span style="font-size:12px;font-weight:800;opacity:.92">Aigle Royal · 0% commission</span>
+    </div>
+  </div>
+  <nav>
+    <a href="tarifs.html">Tarifs</a>
+    <a href="abonnements.html">Abonnements</a>
+    <a href="paiements.html">Paiements</a>
+    <a href="operations.html">Opérations</a>
+    <a href="#" onclick="logout()">Déconnexion</a>
+  </nav>
+</header>
+
+<main>
+  <h2>Centre de contrôle</h2>
+  <div class="sub">Administration centrale DIGIY. Paiement direct. Décisions locales.</div>
+
+  <div class="topbar">
+    <span class="pill">👤 <span id="who" class="muted">…</span></span>
+    <span class="pill">📍 <span id="cityPill" class="muted">…</span></span>
+    <span class="pill">🛡️ <span id="rolePill" class="muted">…</span></span>
+  </div>
+
+  <section class="grid">
+    <div class="card" onclick="go('tarifs.html')">
+      <h3>📍 Tarifs par ville</h3>
+      <p>RIDE · FRET · LOC · RESTO</p>
+    </div>
+    <div class="card" onclick="go('abonnements.html')">
+      <h3>💼 Abonnements PRO</h3>
+      <p>Modules actifs · Packs</p>
+    </div>
+    <div class="card" onclick="go('paiements.html')">
+      <h3>💸 Paiements</h3>
+      <p>Audit · Transparence</p>
+    </div>
+    <div class="card" onclick="go('operations.html')">
+      <h3>🚦 Opérations terrain</h3>
+      <p>Drivers · Commandes · Alertes</p>
+    </div>
+  </section>
+</main>
+
+<footer>DIGIYLYFE — Made in Sénégal 🦅</footer>
+
+<script>
+(function() {
+  'use strict';
+  
+  /* 🔐 SUPABASE — INSTANCE UNIQUE */
+  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+
+  if (!window.supabase) {
+    alert("❌ Erreur: Supabase CDN non chargé!");
+    return;
+  }
+
+  const { createClient } = window.supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  console.log("✅ Supabase initialisé - ADMIN HUB v2.0");
+
+  /* 🧭 Navigation */
+  function basePath() {
+    const p = location.pathname;
+    return p.endsWith("/") ? p : p.substring(0, p.lastIndexOf("/") + 1);
+  }
+
+  window.go = function(file) {
+    location.href = basePath() + file;
+  };
+
+  /* 🔐 ADMIN GUARD */
+  const ADMIN = { user: null, role: null, city: null };
+
+  async function adminGuard() {
+    try {
+      const { data: { user } } = await sb.auth.getUser();
+      
+      if (!user) {
+        alert("Accès admin requis");
+        go("login.html");
+        return;
+      }
+
+      const { data, error } = await sb
+        .from("admin_users")
+        .select("role, city")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error("Erreur admin:", error);
+        alert("Accès refusé");
+        go("login.html");
+        return;
+      }
+
+      ADMIN.user = user;
+      ADMIN.role = data.role || "admin";
+      ADMIN.city = data.city || "";
+
+      document.getElementById("who").innerText = user.email || user.id;
+      document.getElementById("cityPill").innerText = ADMIN.city || "Toutes villes";
+      document.getElementById("rolePill").innerText = ADMIN.role;
+
+      console.log("✅ ADMIN CONNECTÉ:", user.id, ADMIN.role, ADMIN.city);
+    } catch (err) {
+      console.error("Erreur guard:", err);
+      alert("Erreur de connexion");
+    }
+  }
+
+  window.logout = async function() {
+    await sb.auth.signOut();
+    go("login.html");
+  };
+
+  // Lancement
+  adminGuard();
+})();
+</script>
+</body>
+</html>

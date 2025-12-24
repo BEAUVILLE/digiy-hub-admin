@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>DIGIY HUB ADMIN — Tarifs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#16a34a" />
+  <meta name="description" content="DIGIY HUB ADMIN — Tarifs par ville (RIDE & FRET)." />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{
+      --green:#16a34a; --gold:#facc15;
+      --bg:#f8fafc; --card:#fff; --text:#0f172a; --muted:#64748b;
+      --line:rgba(15,23,42,.12); --radius:18px; --shadow:0 12px 28px rgba(2,6,23,.08);
+      --danger:#ef4444; --ok:#22c55e;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{
+      background:linear-gradient(135deg,var(--green),#22c55e);
+      color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap
+    }
+    .logo{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.04em}
+    .mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#f97316);
+      display:grid;place-items:center;color:#111827;font-size:20px;box-shadow:0 8px 20px rgba(250,204,21,.35)}
+    nav{display:flex;gap:10px;flex-wrap:wrap}
+    nav a{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:8px 14px;border-radius:999px;color:#fff;text-decoration:none;font-weight:800;font-size:13px}
+    main{max-width:1150px;margin:auto;padding:22px}
+    .top{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+    h2{margin:0}
+    .sub{margin:6px 0 0 0;color:var(--muted);font-weight:650}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);padding:16px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .field{display:flex;flex-direction:column;gap:6px;min-width:160px;flex:1}
+    label{font-size:12px;color:var(--muted);font-weight:800}
+    input,select{
+      padding:12px 12px;border-radius:14px;border:1px solid var(--line);
+      outline:none;font-weight:750;background:#fff;color:var(--text)
+    }
+    .btn{border:none;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer}
+    .btn-primary{background:var(--green);color:#fff}
+    .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
+    .btn-danger{background:var(--danger);color:#fff}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:900}
+    .muted{color:var(--muted)}
+    table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:16px;border:1px solid var(--line);background:#fff}
+    th,td{padding:10px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+    th{background:#f1f5f9;font-size:12px;letter-spacing:.02em;text-transform:uppercase}
+    tr:last-child td{border-bottom:none}
+    .right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .toast{margin-top:10px;font-weight:850}
+    .ok{color:var(--ok)} .bad{color:var(--danger)}
+    footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
+    .split{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:920px){.split{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="mark">∞</div>
+    <div>
+      DIGIY HUB ADMIN<br>
+      <span style="font-size:12px;font-weight:800;opacity:.95">Tarifs · RIDE & FRET</span>
+    </div>
+  </div>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="tarifs.html">Tarifs</a>
+    <a href="abonnements.html">Abonnements</a>
+    <a href="paiements.html">Paiements</a>
+    <a href="operations.html">Opérations</a>
+    <a href="#" onclick="logout()">Déconnexion</a>
+  </nav>
+</header>
+
+<main>
+  <div class="top">
+    <div>
+      <h2>Tarifs par ville</h2>
+      <p class="sub">Tu gères ici les grilles : plancher, km, zone, volume. Terrain first.</p>
+    </div>
+    <div class="right">
+      <span class="pill">👤 <span id="who" class="muted">…</span></span>
+      <span class="pill">📍 <span id="cityPill" class="muted">…</span></span>
+      <button class="btn btn-ghost" onclick="reloadAll()">↻ Recharger</button>
+    </div>
+  </div>
+
+  <div class="split">
+    <!-- RIDE -->
+    <section class="card">
+      <h3 style="margin:0 0 10px 0">🚗 RIDE — Grille</h3>
+      <div class="row">
+        <div class="field">
+          <label>Ville</label>
+          <input id="ride_city" placeholder="Dakar" />
+        </div>
+        <div class="field">
+          <label>Base (F CFA)</label>
+          <input id="ride_base" type="number" min="0" placeholder="1500" />
+        </div>
+        <div class="field">
+          <label>Prix / km (F CFA)</label>
+          <input id="ride_per_km" type="number" min="0" placeholder="300" />
+        </div>
+        <div class="field">
+          <label>Plancher (F CFA)</label>
+          <input id="ride_floor" type="number" min="0" placeholder="2000" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-primary" onclick="saveRide()">Enregistrer RIDE</button>
+        <button class="btn btn-danger" onclick="deleteRide()">Supprimer RIDE</button>
+      </div>
+
+      <div id="ride_toast" class="toast"></div>
+
+      <div style="margin-top:14px">
+        <table>
+          <thead>
+            <tr>
+              <th>Ville</th><th>Base</th><th>/km</th><th>Plancher</th><th>Maj</th>
+            </tr>
+          </thead>
+          <tbody id="ride_rows">
+            <tr><td colspan="5" class="muted">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FRET -->
+    <section class="card">
+      <h3 style="margin:0 0 10px 0">📦 FRET — Grille</h3>
+      <div class="row">
+        <div class="field">
+          <label>Ville</label>
+          <input id="fret_city" placeholder="Dakar" />
+        </div>
+        <div class="field">
+          <label>Base (F CFA)</label>
+          <input id="fret_base" type="number" min="0" placeholder="2000" />
+        </div>
+        <div class="field">
+          <label>Prix / km (F CFA)</label>
+          <input id="fret_per_km" type="number" min="0" placeholder="350" />
+        </div>
+        <div class="field">
+          <label>Plancher (F CFA)</label>
+          <input id="fret_floor" type="number" min="0" placeholder="3000" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div class="field" style="min-width:180px;max-width:220px">
+          <label>Plancher Volume</label>
+          <select id="fret_vol">
+            <option value="S">S (petit)</option>
+            <option value="M" selected>M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Plancher volume (F CFA)</label>
+          <input id="fret_vol_floor" type="number" min="0" placeholder="4500" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-primary" onclick="saveFret()">Enregistrer FRET</button>
+        <button class="btn btn-danger" onclick="deleteFret()">Supprimer FRET</button>
+      </div>
+
+      <div id="fret_toast" class="toast"></div>
+
+      <div style="margin-top:14px">
+        <table>
+          <thead>
+            <tr>
+              <th>Ville</th><th>Base</th><th>/km</th><th>Plancher</th><th>Vol</th><th>Plancher vol</th><th>Maj</th>
+            </tr>
+          </thead>
+          <tbody id="fret_rows">
+            <tr><td colspan="7" class="muted">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>DIGIYLYFE — Made in Sénégal 🦅</footer>
+
+<script>
+/* 🔐 SUPABASE — DÉJÀ POSÉ */
+const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* 🧭 BASE PATH (anti-404) */
+function basePath(){
+  const p = window.location.pathname;
+  if(p.endsWith("/")) return p;
+  return p.substring(0, p.lastIndexOf("/") + 1);
+}
+function go(file){ window.location.href = basePath() + file; }
+
+/* ⚙️ TABLES (modifie si tes noms diffèrent) */
+const TABLE_RIDE_PRICING = "city_pricing_ride";  // city, base_fare, per_km, floor_fare, updated_at
+const TABLE_FRET_PRICING = "city_pricing_fret";  // city, base_fare, per_km, floor_fare, vol, vol_floor, updated_at
+
+/* 🔐 ADMIN GUARD */
+let ADMIN = { user:null, role:null, city:null };
+
+async function adminGuard(){
+  const { data: { user } } = await supabase.auth.getUser();
+  if(!user){ alert("Accès admin requis"); go("login.html"); return; }
+
+  const { data, error } = await supabase
+    .from("admin_users")
+    .select("role, city")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if(error || !data){ alert("Accès refusé"); go("index.html"); return; }
+
+  ADMIN.user = user;
+  ADMIN.role = data.role || "admin";
+  ADMIN.city = data.city || "";
+
+  document.getElementById("who").innerText = (user.email || user.id).slice(0, 26);
+  document.getElementById("cityPill").innerText = ADMIN.city || "Toutes villes";
+
+  if(ADMIN.city){
+    document.getElementById("ride_city").value = ADMIN.city;
+    document.getElementById("fret_city").value = ADMIN.city;
+    document.getElementById("ride_city").disabled = true;
+    document.getElementById("fret_city").disabled = true;
+  }
+
+  await reloadAll();
+}
+
+adminGuard();
+
+async function logout(){
+  await supabase.auth.signOut();
+  go("login.html");
+}
+
+/* 🧹 UI helpers */
+function toast(id, msg, ok=true){
+  const el = document.getElementById(id);
+  el.className = "toast " + (ok ? "ok":"bad");
+  el.textContent = msg;
+  setTimeout(()=>{ el.textContent=""; }, 3500);
+}
+function money(n){
+  const v = Number(n || 0);
+  return v.toLocaleString("fr-FR") + " F";
+}
+function nowFmt(ts){
+  if(!ts) return "—";
+  try{ return new Date(ts).toLocaleString("fr-FR"); }catch(e){ return "—"; }
+}
+
+/* 🔄 LOAD */
+async function reloadAll(){ await Promise.all([loadRide(), loadFret()]); }
+
+/* ===== RIDE ===== */
+async function loadRide(){
+  const tbody = document.getElementById("ride_rows");
+  tbody.innerHTML = `<tr><td colspan="5" class="muted">Chargement…</td></tr>`;
+
+  let q = supabase.from(TABLE_RIDE_PRICING)
+    .select("city, base_fare, per_km, floor_fare, updated_at")
+    .order("city", { ascending:true });
+
+  if(ADMIN.city) q = q.eq("city", ADMIN.city);
+
+  const { data, error } = await q;
+  if(error){
+    tbody.innerHTML = `<tr><td colspan="5" style="color:#ef4444;font-weight:900">Erreur: ${error.message}</td></tr>`;
+    return;
+  }
+  if(!data || data.length===0){
+    tbody.innerHTML = `<tr><td colspan="5" class="muted">Aucune grille RIDE.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(r => `
+    <tr onclick='pickRide(${JSON.stringify(r).replace(/'/g,"&#39;")})' style="cursor:pointer">
+      <td><b>${r.city || ""}</b></td>
+      <td>${money(r.base_fare)}</td>
+      <td>${money(r.per_km)}</td>
+      <td>${money(r.floor_fare)}</td>
+      <td class="muted">${nowFmt(r.updated_at)}</td>
+    </tr>
+  `).join("");
+}
+function pickRide(r){
+  document.getElementById("ride_city").value = r.city || "";
+  document.getElementById("ride_base").value = r.base_fare ?? "";
+  document.getElementById("ride_per_km").value = r.per_km ?? "";
+  document.getElementById("ride_floor").value = r.floor_fare ?? "";
+}
+async function saveRide(){
+  const city = (document.getElementById("ride_city").value || "").trim();
+  const base = Number(document.getElementById("ride_base").value || 0);
+  const perKm = Number(document.getElementById("ride_per_km").value || 0);
+  const floor = Number(document.getElementById("ride_floor").value || 0);
+
+  if(!city){ toast("ride_toast","Ville requise.", false); return; }
+
+  const payload = { city, base_fare: base, per_km: perKm, floor_fare: floor, updated_at: new Date().toISOString() };
+  const { error } = await supabase.from(TABLE_RIDE_PRICING).upsert(payload, { onConflict: "city" });
+  if(error){ toast("ride_toast","Erreur: "+error.message,false); return; }
+
+  toast("ride_toast","RIDE enregistré ✅", true);
+  await loadRide();
+}
+async function deleteRide(){
+  const city = (document.getElementById("ride_city").value || "").trim();
+  if(!city){ toast("ride_toast","Ville requise.", false); return; }
+  if(!confirm("Supprimer la grille RIDE pour "+city+" ?")) return;
+
+  const { error } = await supabase.from(TABLE_RIDE_PRICING).delete().eq("city", city);
+  if(error){ toast("ride_toast","Erreur: "+error.message,false); return; }
+
+  toast("ride_toast","RIDE supprimé ✅", true);
+  await loadRide();
+}
+
+/* ===== FRET ===== */
+async function loadFret(){
+  const tbody = document.getElementById("fret_rows");
+  tbody.innerHTML = `<tr><td colspan="7" class="muted">Chargement…</td></tr>`;
+
+  let q = supabase.from(TABLE_FRET_PRICING)
+    .select("city, base_fare, per_km, floor_fare, vol, vol_floor, updated_at")
+    .order("city", { ascending:true })
+    .order("vol", { ascending:true });
+
+  if(ADMIN.city) q = q.eq("city", ADMIN.city);
+
+  const { data, error } = await q;
+  if(error){
+    tbody.innerHTML = `<tr><td colspan="7" style="color:#ef4444;font-weight:900">Erreur: ${error.message}</td></tr>`;
+    return;
+  }
+  if(!data || data.length===0){
+    tbody.innerHTML = `<tr><td colspan="7" class="muted">Aucune grille FRET.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(r => `
+    <tr onclick='pickFret(${JSON.stringify(r).replace(/'/g,"&#39;")})' style="cursor:pointer">
+      <td><b>${r.city || ""}</b></td>
+      <td>${money(r.base_fare)}</td>
+      <td>${money(r.per_km)}</td>
+      <td>${money(r.floor_fare)}</td>
+      <td><b>${r.vol || "—"}</b></td>
+      <td>${money(r.vol_floor)}</td>
+      <td class="muted">${nowFmt(r.updated_at)}</td>
+    </tr>
+  `).join("");
+}
+function pickFret(r){
+  document.getElementById("fret_city").value = r.city || "";
+  document.getElementById("fret_base").value = r.base_fare ?? "";
+  document.getElementById("fret_per_km").value = r.per_km ?? "";
+  document.getElementById("fret_floor").value = r.floor_fare ?? "";
+  document.getElementById("fret_vol").value = r.vol || "M";
+  document.getElementById("fret_vol_floor").value = r.vol_floor ?? "";
+}
+async function saveFret(){
+  const city = (document.getElementById("fret_city").value || "").trim();
+  const base = Number(document.getElementById("fret_base").value || 0);
+  const perKm = Number(document.getElementById("fret_per_km").value || 0);
+  const floor = Number(document.getElementById("fret_floor").value || 0);
+  const vol = document.getElementById("fret_vol").value;
+  const volFloor = Number(document.getElementById("fret_vol_floor").value || 0);
+
+  if(!city){ toast("fret_toast","Ville requise.", false); return; }
+  if(!vol){ toast("fret_toast","Volume requis.", false); return; }
+
+  const payload = { city, base_fare: base, per_km: perKm, floor_fare: floor, vol, vol_floor: volFloor, updated_at: new Date().toISOString() };
+  const { error } = await supabase.from(TABLE_FRET_PRICING).upsert(payload, { onConflict: "city,vol" });
+  if(error){ toast("fret_toast","Erreur: "+error.message,false); return; }
+
+  toast("fret_toast","FRET enregistré ✅", true);
+  await loadFret();
+}
+async function deleteFret(){
+  const city = (document.getElementById("fret_city").value || "").trim();
+  const vol = document.getElementById("fret_vol").value;
+  if(!city || !vol){ toast("fret_toast","Ville + volume requis.", false); return; }
+  if(!confirm("Supprimer la grille FRET "+city+" / "+vol+" ?")) return;
+
+  const { error } = await supabase.from(TABLE_FRET_PRICING).delete().eq("city", city).eq("vol", vol);
+  if(error){ toast("fret_toast","Erreur: "+error.message,false); return; }
+
+  toast("fret_toast","FRET supprimé ✅", true);
+  await loadFret();
+}
+</script>
+</body>
+</html>

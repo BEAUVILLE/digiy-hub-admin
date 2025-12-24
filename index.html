@@ -1,4 +1,4 @@
-html<!doctype html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
@@ -86,6 +86,7 @@ html<!doctype html>
     <a href="abonnements.html">Abonnements</a>
     <a href="paiements.html">Paiements</a>
     <a href="operations.html">Opérations</a>
+    <a href="gestion-admins.html">👥 Admins</a>
     <a href="#" id="btnLogout">Déconnexion</a>
   </nav>
 </header>
@@ -98,6 +99,7 @@ html<!doctype html>
     <span class="pill">👤 <span id="who" class="muted">Chargement...</span></span>
     <span class="pill">📍 <span id="cityPill" class="muted">...</span></span>
     <span class="pill">🛡️ <span id="rolePill" class="muted">...</span></span>
+    <span class="pill" id="statusPill" style="display:none">⚡ <span class="muted">Actif</span></span>
   </div>
 
   <section class="grid">
@@ -117,53 +119,50 @@ html<!doctype html>
       <h3>🚦 Opérations terrain</h3>
       <p>Drivers · Commandes · Alertes</p>
     </div>
+    <div class="card" data-page="gestion-admins.html" id="adminCard" style="display:none">
+      <h3>👥 Gestion Admins</h3>
+      <p>Promouvoir · Rétrograder · Villes</p>
+    </div>
   </section>
 </main>
 
 <footer>DIGIYLYFE — Made in Sénégal 🦅</footer>
 
-<!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-console.log("🚀 Script démarré");
+console.log("🚀 DIGIY HUB ADMIN v3.0 - Script démarré");
 
-// Config Supabase
 const SUPABASE_CONFIG = {
   url: "https://wesqmwjjtsefyjnluosj.supabase.co",
   key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA"
 };
 
-// Init Supabase
 let sb;
 try {
   if (!window.supabase) throw new Error("Supabase CDN non chargé");
   sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
-  console.log("✅ Supabase OK");
+  console.log("✅ Supabase initialisé");
 } catch (err) {
   console.error("❌ Erreur Supabase:", err);
   alert("Erreur de chargement. Rechargez la page.");
 }
 
-// Navigation
 function goTo(page) {
   const base = location.pathname.replace(/[^/]*$/, '');
   location.href = base + page;
 }
 
-// Cards cliquables
 document.querySelectorAll('.card[data-page]').forEach(card => {
   card.addEventListener('click', () => goTo(card.dataset.page));
 });
 
-// Logout
 document.getElementById('btnLogout').addEventListener('click', async (e) => {
   e.preventDefault();
   await sb.auth.signOut();
   goTo('login.html');
 });
 
-// Guard Admin
 async function checkAdmin() {
   try {
     console.log("🔐 Vérification admin...");
@@ -171,30 +170,40 @@ async function checkAdmin() {
     const { data: { user }, error: userError } = await sb.auth.getUser();
     
     if (userError || !user) {
-      console.warn("Pas d'utilisateur connecté");
+      console.warn("⚠️ Pas d'utilisateur connecté");
       alert("Accès admin requis");
       goTo("login.html");
       return;
     }
 
-    console.log("👤 User:", user.id);
+    console.log("👤 User connecté:", user.id);
 
+    // ✅ NOUVEAU: Récupère role, city ET is_active
     const { data: adminData, error: adminError } = await sb
       .from("admin_users")
-      .select("role, city")
+      .select("role, city, is_active")
       .eq("user_id", user.id)
-      .maybeSingle();
+      .single();
 
     if (adminError) {
-      console.error("Erreur DB:", adminError);
-      alert("Erreur d'accès");
+      console.error("❌ Erreur DB:", adminError);
+      alert("Erreur d'accès base de données");
       goTo("login.html");
       return;
     }
 
     if (!adminData) {
-      console.warn("Utilisateur non admin");
-      alert("Accès refusé");
+      console.warn("⚠️ Utilisateur non admin");
+      alert("Accès refusé - Vous n'êtes pas administrateur");
+      goTo("login.html");
+      return;
+    }
+
+    // ✅ CRITIQUE: Vérifier is_active
+    if (!adminData.is_active) {
+      console.warn("⚠️ Compte désactivé");
+      alert("Votre compte admin a été désactivé. Contactez l'administrateur principal.");
+      await sb.auth.signOut();
       goTo("login.html");
       return;
     }
@@ -202,44 +211,38 @@ async function checkAdmin() {
     // Affichage
     document.getElementById("who").textContent = user.email || user.id;
     document.getElementById("cityPill").textContent = adminData.city || "Toutes villes";
-    document.getElementById("rolePill").textContent = adminData.role || "admin";
+    document.getElementById("rolePill").textContent = adminData.role || "viewer";
+    
+    // Affiche le statut actif
+    const statusPill = document.getElementById("statusPill");
+    if (statusPill) {
+      statusPill.style.display = "inline-flex";
+      statusPill.querySelector("span").textContent = adminData.is_active ? "Actif" : "Inactif";
+      statusPill.style.borderColor = adminData.is_active ? "var(--green)" : "#dc2626";
+    }
 
-    console.log("✅ Admin OK:", adminData.role, adminData.city);
+    // ✅ Affiche la carte "Gestion Admins" SEULEMENT pour super_admin
+    if (adminData.role === 'super_admin') {
+      const adminCard = document.getElementById("adminCard");
+      if (adminCard) adminCard.style.display = "block";
+    }
+
+    console.log("✅ Admin authentifié:", adminData.role, adminData.city, "Active:", adminData.is_active);
 
   } catch (err) {
-    console.error("💥 Erreur guard:", err);
+    console.error("💥 Erreur critique guard:", err);
     alert("Erreur système");
   }
 }
 
-// Lancement
 if (sb) {
   checkAdmin();
 } else {
-  console.error("❌ Supabase non disponible");
+  console.error("❌ Impossible de lancer le guard - Supabase non disponible");
 }
 </script>
 </body>
 </html>
-```
 
----
 
-## 🎯 CHANGEMENTS CRITIQUES
-
-1. ✅ **Supabase en BAS** du body (chargement garanti)
-2. ✅ **Variable `sb`** au lieu de `supabase`
-3. ✅ **Try/catch partout**
-4. ✅ **Event listeners** au lieu de `onclick`
-5. ✅ **Console.log** à chaque étape
-
----
-
-## 📍 TESTE ET DIS-MOI
-
-**Ouvre la console et tu DOIS voir :**
-```
-🚀 Script démarré
-✅ Supabase OK
-🔐 Vérification admin...
 

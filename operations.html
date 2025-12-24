@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#16a34a" />
   <meta name="description" content="DIGIY HUB ADMIN — Opérations terrain live." />
 
+  <!-- SUPABASE CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -18,11 +19,23 @@
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    header{background:linear-gradient(135deg,var(--green),#22c55e);color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    header{
+      background:linear-gradient(135deg,var(--green),#22c55e);
+      color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap
+    }
     .logo{display:flex;align-items:center;gap:12px;font-weight:900}
-    .mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#f97316);display:grid;place-items:center;color:#111827;font-size:20px;box-shadow:0 8px 20px rgba(250,204,21,.35)}
+    .mark{
+      width:42px;height:42px;border-radius:14px;
+      background:linear-gradient(135deg,var(--gold),#f97316);
+      display:grid;place-items:center;color:#111827;font-size:20px;
+      box-shadow:0 8px 20px rgba(250,204,21,.35)
+    }
     nav{display:flex;gap:10px;flex-wrap:wrap}
-    nav a{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:8px 14px;border-radius:999px;color:#fff;text-decoration:none;font-weight:800;font-size:13px}
+    nav a{
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.35);
+      padding:8px 14px;border-radius:999px;color:#fff;text-decoration:none;font-weight:800;font-size:13px
+    }
     main{max-width:1150px;margin:auto;padding:22px}
     h2{margin:0}
     .sub{margin:6px 0 12px 0;color:var(--muted);font-weight:650}
@@ -44,10 +57,16 @@
     footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
   </style>
 </head>
-<body>
 
+<body>
 <header>
-  <div class="logo"><div class="mark">∞</div><div>DIGIY HUB ADMIN<br><span style="font-size:12px;font-weight:800;opacity:.95">Opérations · Terrain live</span></div></div>
+  <div class="logo">
+    <div class="mark">∞</div>
+    <div>
+      DIGIY HUB ADMIN<br>
+      <span style="font-size:12px;font-weight:800;opacity:.95">Opérations · Terrain live</span>
+    </div>
+  </div>
   <nav>
     <a href="index.html">Accueil</a>
     <a href="tarifs.html">Tarifs</a>
@@ -110,206 +129,14 @@
 
 <footer>DIGIYLYFE — Made in Sénégal 🦅</footer>
 
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <title>DIGIY HUB ADMIN — Opérations</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#16a34a" />
-  <meta name="description" content="DIGIY HUB ADMIN — Opérations terrain live." />
-
-  <!-- SUPABASE CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root{
-      --green:#16a34a; --gold:#facc15;
-      --bg:#f8fafc; --card:#fff; --text:#0f172a; --muted:#64748b;
-      --line:rgba(15,23,42,.12); --radius:18px; --shadow:0 12px 28px rgba(2,6,23,.08);
-      --ok:#22c55e; --danger:#ef4444;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text)
-    }
-    header{
-      background:linear-gradient(135deg,var(--green),#22c55e);
-      color:#fff;
-      padding:18px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap
-    }
-    .logo{display:flex;align-items:center;gap:12px;font-weight:900}
-    .mark{
-      width:42px;height:42px;border-radius:14px;
-      background:linear-gradient(135deg,var(--gold),#f97316);
-      display:grid;place-items:center;
-      color:#111827;font-size:20px;
-      box-shadow:0 8px 20px rgba(250,204,21,.35)
-    }
-    nav{display:flex;gap:10px;flex-wrap:wrap}
-    nav a{
-      background:rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.35);
-      padding:8px 14px;
-      border-radius:999px;
-      color:#fff;
-      text-decoration:none;
-      font-weight:800;
-      font-size:13px
-    }
-    main{max-width:1150px;margin:auto;padding:22px}
-    h2{margin:0}
-    .sub{margin:6px 0 12px 0;color:var(--muted);font-weight:650}
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:14px;
-      margin-bottom:14px
-    }
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      border:1px solid var(--line);
-      padding:16px
-    }
-    .kpi{font-size:28px;font-weight:950}
-    .muted{color:var(--muted)}
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-weight:900
-    }
-    .bar{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:10px
-    }
-    .btn{
-      border:none;
-      border-radius:14px;
-      padding:12px 14px;
-      font-weight:900;
-      cursor:pointer
-    }
-    .btn-primary{background:var(--green);color:#fff}
-    .btn-ghost{background:#fff;border:1px solid var(--line)}
-    table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      overflow:hidden;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:#fff
-    }
-    th,td{
-      padding:10px;
-      border-bottom:1px solid var(--line);
-      text-align:left;
-      font-size:13px
-    }
-    th{
-      background:#f1f5f9;
-      font-size:12px;
-      text-transform:uppercase
-    }
-    tr:last-child td{border-bottom:none}
-    .ok{color:var(--ok);font-weight:900}
-    .bad{color:var(--danger);font-weight:900}
-    footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
-  </style>
-</head>
-<body>
-
-<header>
-  <div class="logo">
-    <div class="mark">∞</div>
-    <div>
-      DIGIY HUB ADMIN<br>
-      <span style="font-size:12px;font-weight:800;opacity:.95">Opérations · Terrain live</span>
-    </div>
-  </div>
-  <nav>
-    <a href="index.html">Accueil</a>
-    <a href="tarifs.html">Tarifs</a>
-    <a href="abonnements.html">Abonnements</a>
-    <a href="paiements.html">Paiements</a>
-    <a href="operations.html">Opérations</a>
-    <a href="#" onclick="logout()">Déconnexion</a>
-  </nav>
-</header>
-
-<main>
-  <div class="bar">
-    <div>
-      <h2>Opérations terrain</h2>
-      <div class="sub">Vue synthèse : drivers, courses et fret en temps réel.</div>
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <span class="pill">👤 <span id="who" class="muted">—</span></span>
-      <span class="pill">📍 <span id="cityPill" class="muted">—</span></span>
-      <button class="btn btn-ghost" onclick="reloadAll()">↻ Recharger</button>
-    </div>
-  </div>
-
-  <section class="grid">
-    <div class="card">
-      <div class="muted">Drivers en ligne</div>
-      <div id="kpiDrivers" class="kpi">0</div>
-    </div>
-    <div class="card">
-      <div class="muted">Courses RIDE actives</div>
-      <div id="kpiRide" class="kpi">0</div>
-    </div>
-    <div class="card">
-      <div class="muted">Commandes FRET actives</div>
-      <div id="kpiFret" class="kpi">0</div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="bar">
-      <div style="font-weight:950">Dernières demandes</div>
-      <button class="btn btn-primary" onclick="reloadAll()">Actualiser</button>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th><th>Type</th><th>Ville</th><th>Zone</th><th>Client</th><th>Statut</th>
-        </tr>
-      </thead>
-      <tbody id="rows">
-        <tr><td colspan="6" class="muted">Chargement…</td></tr>
-      </tbody>
-    </table>
-  </section>
-</main>
-
-<footer>DIGIYLYFE — Made in Sénégal 🦅</footer>
-
 <script>
-/* 🔐 SUPABASE */
+/* 🔐 SUPABASE (1 seule fois) */
 const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
 const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdXNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+
+const { createClient } = window.supabase;
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* 🧭 Anti-404 */
 function basePath(){
@@ -318,102 +145,19 @@ function basePath(){
 }
 function go(file){ location.href = basePath() + file; }
 
-/* 📦 TABLES */
+/* 📦 TABLES (adapte si tes noms diffèrent) */
 const TABLE_DRIVERS = "driver_profiles";
-const TABLE_RIDE = "ride_requests";
-const TABLE_FRET = "fret_requests";
+const TABLE_RIDE_REQ = "ride_requests";
+const TABLE_FRET_REQ = "fret_requests";
+
+/* 🧠 Utils */
+function dt(ts){ try{return new Date(ts).toLocaleString("fr-FR");}catch(e){return "—";} }
 
 /* 🔐 ADMIN GUARD */
-let ADMIN = { user:null, city:null };
-
-async function adminGuard(){
-  const { data:{ user } } = await supabase.auth.getUser();
-  if(!user){ alert("Accès admin requis"); go("login.html"); return; }
-
-  const { data } = await supabase
-    .from("admin_users")
-    .select("city")
-    .eq("user_id", user.id)
-    .single();
-
-  ADMIN.user = user;
-  ADMIN.city = data?.city || "";
-
-  document.getElementById("who").innerText = user.email || user.id;
-  document.getElementById("cityPill").innerText = ADMIN.city || "Toutes villes";
-
-  reloadAll();
-}
-
-adminGuard();
-
-async function logout(){
-  await supabase.auth.signOut();
-  go("login.html");
-}
-
-/* 🔄 LOADERS */
-async function reloadAll(){
-  await Promise.all([loadKPIs(), loadLatest()]);
-}
-
-async function loadKPIs(){
-  const d = await supabase.from(TABLE_DRIVERS)
-    .select("id",{count:"exact",head:true})
-    .eq("is_online",true);
-  document.getElementById("kpiDrivers").innerText = d.count || 0;
-
-  const r = await supabase.from(TABLE_RIDE)
-    .select("id",{count:"exact",head:true})
-    .in("status",["new","accepted","ongoing"]);
-  document.getElementById("kpiRide").innerText = r.count || 0;
-
-  const f = await supabase.from(TABLE_FRET)
-    .select("id",{count:"exact",head:true})
-    .in("status",["new","accepted","ongoing"]);
-  document.getElementById("kpiFret").innerText = f.count || 0;
-}
-
-async function loadLatest(){
-  const tbody = document.getElementById("rows");
-  tbody.innerHTML = `<tr><td colspan="6" class="muted">Chargement…</td></tr>`;
-
-  const [ride,fret] = await Promise.all([
-    supabase.from(TABLE_RIDE).select("*").order("created_at",{ascending:false}).limit(15),
-    supabase.from(TABLE_FRET).select("*").order("created_at",{ascending:false}).limit(15)
-  ]);
-
-  const rows = [
-    ...(ride.data||[]).map(x=>({...x,type:"RIDE"})),
-    ...(fret.data||[]).map(x=>({...x,type:"FRET"}))
-  ].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,25);
-
-  if(!rows.length){
-    tbody.innerHTML = `<tr><td colspan="6" class="muted">Aucune donnée</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = rows.map(r=>`
-    <tr>
-      <td>${new Date(r.created_at).toLocaleString("fr-FR")}</td>
-      <td><b>${r.type}</b></td>
-      <td>${r.city||"—"}</td>
-      <td>${r.area||"—"}</td>
-      <td>${r.client_phone||"—"}</td>
-      <td class="${["accepted","ongoing"].includes(r.status)?"ok":"muted"}">${r.status}</td>
-    </tr>
-  `).join("");
-}
-</script>
-
-</body>
-</html>
-
-
 let ADMIN = { user:null, role:null, city:null };
 
 async function adminGuard(){
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data:{ user } } = await supabase.auth.getUser();
   if(!user){ alert("Accès admin requis"); go("login.html"); return; }
 
   const { data, error } = await supabase
@@ -422,37 +166,47 @@ async function adminGuard(){
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if(error || !data){ alert("Accès refusé"); go("index.html"); return; }
+  if(error || !data){ alert("Accès refusé"); go("login.html"); return; }
 
-  ADMIN.user = user; ADMIN.role = data.role || "admin"; ADMIN.city = data.city || "";
-  document.getElementById("who").innerText = (user.email || user.id).slice(0, 26);
+  ADMIN.user = user;
+  ADMIN.role = data.role || "admin";
+  ADMIN.city = data.city || "";
+
+  document.getElementById("who").innerText = (user.email || user.id).slice(0, 28);
   document.getElementById("cityPill").innerText = ADMIN.city || "Toutes villes";
 
   await reloadAll();
 }
+
 adminGuard();
 
-async function logout(){ await supabase.auth.signOut(); go("login.html"); }
+/* 🔓 LOGOUT */
+async function logout(){
+  await supabase.auth.signOut();
+  go("login.html");
+}
 
-function dt(ts){ try{return new Date(ts).toLocaleString("fr-FR");}catch(e){return "—";} }
-
+/* 🔄 LOADERS */
 async function reloadAll(){
   await Promise.all([loadKpis(), loadLatest()]);
 }
 
 async function loadKpis(){
+  // Drivers online
   let q1 = supabase.from(TABLE_DRIVERS).select("id", { count:"exact", head:true }).eq("is_online", true);
   if(ADMIN.city) q1 = q1.eq("city", ADMIN.city);
   const r1 = await q1;
   document.getElementById("kpiDrivers").innerText = (r1.count ?? 0);
   document.getElementById("driversUpdated").innerText = dt(new Date().toISOString());
 
+  // Ride actives
   let q2 = supabase.from(TABLE_RIDE_REQ).select("id", { count:"exact", head:true }).in("status", ["new","accepted","assigned","ongoing"]);
   if(ADMIN.city) q2 = q2.eq("city", ADMIN.city);
   const r2 = await q2;
   document.getElementById("kpiRide").innerText = (r2.count ?? 0);
   document.getElementById("rideUpdated").innerText = dt(new Date().toISOString());
 
+  // Fret actives
   let q3 = supabase.from(TABLE_FRET_REQ).select("id", { count:"exact", head:true }).in("status", ["new","accepted","assigned","ongoing"]);
   if(ADMIN.city) q3 = q3.eq("city", ADMIN.city);
   const r3 = await q3;
@@ -489,7 +243,9 @@ async function loadLatest(){
 
   const rides = (rideRes.data || []).map(r => ({...r, _type:"RIDE"}));
   const frets = (fretRes.data || []).map(r => ({...r, _type:"FRET"}));
-  const all = rides.concat(frets).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at)).slice(0, 30);
+  const all = rides.concat(frets)
+    .sort((a,b)=> new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 30);
 
   if(all.length===0){
     tbody.innerHTML = `<tr><td colspan="6" class="muted">Aucune demande.</td></tr>`;
@@ -498,7 +254,9 @@ async function loadLatest(){
 
   tbody.innerHTML = all.map(r => {
     const st = String(r.status || "").toLowerCase();
-    const stClass = (["accepted","assigned","ongoing"].includes(st)) ? "ok" : (st==="cancelled" || st==="failed") ? "bad" : "muted";
+    const stClass =
+      (["accepted","assigned","ongoing"].includes(st)) ? "ok" :
+      (st==="cancelled" || st==="failed") ? "bad" : "muted";
     return `
       <tr>
         <td>${dt(r.created_at)}</td>
@@ -512,5 +270,6 @@ async function loadLatest(){
   }).join("");
 }
 </script>
+
 </body>
 </html>

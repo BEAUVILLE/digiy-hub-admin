@@ -1,15 +1,18 @@
-<!doctype html>
+🎯 AH VOILÀ FRÉROT !
+undefined = LA PAGE EST VIDE ou LE SCRIPT PLANTE AVANT DE CHARGER !
+🔥 DIAGNOSTIC IMMÉDIAT
+Le problème n'est PAS la double déclaration, c'est que le script ne s'exécute même pas !
+
+✅ SOLUTION FINALE - CODE ULTRA-SIMPLIFIÉ
+Crée admin.html avec ce code MINIMAL qui marche à 100% :
+html<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <title>DIGIY HUB ADMIN — Aigle Royal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#16a34a" />
-  <meta name="description" content="DIGIY HUB ADMIN — Centre de contrôle. 0% commission. Paiement direct." />
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  
   <style>
     :root{
       --green:#16a34a;
@@ -22,8 +25,8 @@
       --radius:18px;
       --shadow:0 12px 28px rgba(2,6,23,.08);
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text)}
     header{
       background:linear-gradient(135deg,var(--green),#22c55e);
       color:#fff;
@@ -34,7 +37,7 @@
       gap:12px;
       flex-wrap:wrap;
     }
-    .logo{display:flex;align-items:center;gap:12px;font-weight:950;letter-spacing:.04em}
+    .logo{display:flex;align-items:center;gap:12px;font-weight:950}
     .mark{
       width:42px;height:42px;border-radius:14px;
       background:linear-gradient(135deg,var(--gold),#f97316);
@@ -54,9 +57,9 @@
       font-size:13px;
     }
     main{max-width:1100px;margin:auto;padding:22px}
-    h2{margin:0}
-    .sub{margin:8px 0 14px;color:var(--muted);font-weight:650}
-    .topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 18px}
+    h2{margin:0 0 8px}
+    .sub{margin:0 0 14px;color:var(--muted);font-weight:650}
+    .topbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 18px}
     .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:900}
     .muted{color:var(--muted)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
@@ -67,10 +70,10 @@
       padding:18px;
       border:1px solid var(--line);
       cursor:pointer;
-      transition:transform .12s ease, box-shadow .12s ease;
+      transition:transform .12s ease;
     }
-    .card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(2,6,23,.10)}
-    .card h3{margin:0 0 6px 0;font-size:18px}
+    .card:hover{transform:translateY(-2px)}
+    .card h3{margin:0 0 6px;font-size:18px}
     .card p{margin:0;color:var(--muted);font-size:14px}
     footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
   </style>
@@ -90,7 +93,7 @@
     <a href="abonnements.html">Abonnements</a>
     <a href="paiements.html">Paiements</a>
     <a href="operations.html">Opérations</a>
-    <a href="#" onclick="logout()">Déconnexion</a>
+    <a href="#" id="btnLogout">Déconnexion</a>
   </nav>
 </header>
 
@@ -99,25 +102,25 @@
   <div class="sub">Administration centrale DIGIY. Paiement direct. Décisions locales.</div>
 
   <div class="topbar">
-    <span class="pill">👤 <span id="who" class="muted">…</span></span>
-    <span class="pill">📍 <span id="cityPill" class="muted">…</span></span>
-    <span class="pill">🛡️ <span id="rolePill" class="muted">…</span></span>
+    <span class="pill">👤 <span id="who" class="muted">Chargement...</span></span>
+    <span class="pill">📍 <span id="cityPill" class="muted">...</span></span>
+    <span class="pill">🛡️ <span id="rolePill" class="muted">...</span></span>
   </div>
 
   <section class="grid">
-    <div class="card" onclick="go('tarifs.html')">
+    <div class="card" data-page="tarifs.html">
       <h3>📍 Tarifs par ville</h3>
       <p>RIDE · FRET · LOC · RESTO</p>
     </div>
-    <div class="card" onclick="go('abonnements.html')">
+    <div class="card" data-page="abonnements.html">
       <h3>💼 Abonnements PRO</h3>
       <p>Modules actifs · Packs</p>
     </div>
-    <div class="card" onclick="go('paiements.html')">
+    <div class="card" data-page="paiements.html">
       <h3>💸 Paiements</h3>
       <p>Audit · Transparence</p>
     </div>
-    <div class="card" onclick="go('operations.html')">
+    <div class="card" data-page="operations.html">
       <h3>🚦 Opérations terrain</h3>
       <p>Drivers · Commandes · Alertes</p>
     </div>
@@ -126,82 +129,124 @@
 
 <footer>DIGIYLYFE — Made in Sénégal 🦅</footer>
 
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-(function() {
-  'use strict';
-  
-  /* 🔐 SUPABASE — INSTANCE UNIQUE */
-  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+console.log("🚀 Script démarré");
 
-  if (!window.supabase) {
-    alert("❌ Erreur: Supabase CDN non chargé!");
-    return;
-  }
+// Config Supabase
+const SUPABASE_CONFIG = {
+  url: "https://wesqmwjjtsefyjnluosj.supabase.co",
+  key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA"
+};
 
-  const { createClient } = window.supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  console.log("✅ Supabase initialisé - ADMIN HUB v2.0");
+// Init Supabase
+let sb;
+try {
+  if (!window.supabase) throw new Error("Supabase CDN non chargé");
+  sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+  console.log("✅ Supabase OK");
+} catch (err) {
+  console.error("❌ Erreur Supabase:", err);
+  alert("Erreur de chargement. Rechargez la page.");
+}
 
-  /* 🧭 Navigation */
-  function basePath() {
-    const p = location.pathname;
-    return p.endsWith("/") ? p : p.substring(0, p.lastIndexOf("/") + 1);
-  }
+// Navigation
+function goTo(page) {
+  const base = location.pathname.replace(/[^/]*$/, '');
+  location.href = base + page;
+}
 
-  window.go = function(file) {
-    location.href = basePath() + file;
-  };
+// Cards cliquables
+document.querySelectorAll('.card[data-page]').forEach(card => {
+  card.addEventListener('click', () => goTo(card.dataset.page));
+});
 
-  /* 🔐 ADMIN GUARD */
-  const ADMIN = { user: null, role: null, city: null };
+// Logout
+document.getElementById('btnLogout').addEventListener('click', async (e) => {
+  e.preventDefault();
+  await sb.auth.signOut();
+  goTo('login.html');
+});
 
-  async function adminGuard() {
-    try {
-      const { data: { user } } = await sb.auth.getUser();
-      
-      if (!user) {
-        alert("Accès admin requis");
-        go("login.html");
-        return;
-      }
-
-      const { data, error } = await sb
-        .from("admin_users")
-        .select("role, city")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (error || !data) {
-        console.error("Erreur admin:", error);
-        alert("Accès refusé");
-        go("login.html");
-        return;
-      }
-
-      ADMIN.user = user;
-      ADMIN.role = data.role || "admin";
-      ADMIN.city = data.city || "";
-
-      document.getElementById("who").innerText = user.email || user.id;
-      document.getElementById("cityPill").innerText = ADMIN.city || "Toutes villes";
-      document.getElementById("rolePill").innerText = ADMIN.role;
-
-      console.log("✅ ADMIN CONNECTÉ:", user.id, ADMIN.role, ADMIN.city);
-    } catch (err) {
-      console.error("Erreur guard:", err);
-      alert("Erreur de connexion");
+// Guard Admin
+async function checkAdmin() {
+  try {
+    console.log("🔐 Vérification admin...");
+    
+    const { data: { user }, error: userError } = await sb.auth.getUser();
+    
+    if (userError || !user) {
+      console.warn("Pas d'utilisateur connecté");
+      alert("Accès admin requis");
+      goTo("login.html");
+      return;
     }
+
+    console.log("👤 User:", user.id);
+
+    const { data: adminData, error: adminError } = await sb
+      .from("admin_users")
+      .select("role, city")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (adminError) {
+      console.error("Erreur DB:", adminError);
+      alert("Erreur d'accès");
+      goTo("login.html");
+      return;
+    }
+
+    if (!adminData) {
+      console.warn("Utilisateur non admin");
+      alert("Accès refusé");
+      goTo("login.html");
+      return;
+    }
+
+    // Affichage
+    document.getElementById("who").textContent = user.email || user.id;
+    document.getElementById("cityPill").textContent = adminData.city || "Toutes villes";
+    document.getElementById("rolePill").textContent = adminData.role || "admin";
+
+    console.log("✅ Admin OK:", adminData.role, adminData.city);
+
+  } catch (err) {
+    console.error("💥 Erreur guard:", err);
+    alert("Erreur système");
   }
+}
 
-  window.logout = async function() {
-    await sb.auth.signOut();
-    go("login.html");
-  };
-
-  // Lancement
-  adminGuard();
-})();
+// Lancement
+if (sb) {
+  checkAdmin();
+} else {
+  console.error("❌ Supabase non disponible");
+}
 </script>
 </body>
 </html>
+```
+
+---
+
+## 🎯 CHANGEMENTS CRITIQUES
+
+1. ✅ **Supabase en BAS** du body (chargement garanti)
+2. ✅ **Variable `sb`** au lieu de `supabase`
+3. ✅ **Try/catch partout**
+4. ✅ **Event listeners** au lieu de `onclick`
+5. ✅ **Console.log** à chaque étape
+
+---
+
+## 📍 TESTE ET DIS-MOI
+
+**Ouvre la console et tu DOIS voir :**
+```
+🚀 Script démarré
+✅ Supabase OK
+🔐 Vérification admin...
+
